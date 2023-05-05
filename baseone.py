@@ -3,7 +3,10 @@ import pygame
 import time
 import math
 import threading
-# import firebase 
+from firebase import aw 
+import asyncio
+# import asyncio
+from async_firebase import AsyncFirebaseClient
 
 pygame.init()
 
@@ -73,12 +76,13 @@ while run:
     screen.blit(grass, (150, 400))
     screen.blit(grass, (0, 400))
     
-    if random.randint(1, 200) == 1:
+    if random.randint(1, 50) == 1:
+        # print(random.randint(1, 200))
         car_positions.append([-100, random.randint(200, 380)])
         
-    if random.randint(1, 500) == 1:
+    if random.randint(1, 700) == 1:
         truck_positions.append([-100, random.randint(200, 380)])
-    if random.randint(1, 300) == 1:
+    if random.randint(1, 200) == 1:
         bike_positions.append([-100, random.randint(200, 380)])
        
     for i in range(len(car_positions)):
@@ -88,13 +92,14 @@ while run:
         # firebase.send_data(len(car_positions))
         screen.blit(car, car_position)
 
-        if car_position[0] > 0 :
+        if car_position[0] or bike_position[0] or truck_position[0] > 0 :
            car_count = 1
         
         
         if car_position[0] > width:
             car_positions.pop(i)
             car_count += 1
+            # print(car_count)
             break
     for i in range(len(truck_positions)):
         truck_position = truck_positions[i]
@@ -145,10 +150,13 @@ while run:
         screen.blit(stra2, (470, 80))
         screen.blit(stra2, (670, 80))
         camera_text = font.render("Camera Off",True,(245,19,2))
-    clock.tick(160)    
+    asyncio.run(aw(total_vehicle_count))
+    clock.tick(60)    
     car_count_text = font.render("Real Vehicle Count: " + str(total_vehicle_count), True, (0,0,0))
     screen.blit(car_count_text, (10, 10))
     screen.blit(camera_text, (850, 10))
+
+    
     
     # print(car_positions)
     pygame.display.flip()  # update the display
